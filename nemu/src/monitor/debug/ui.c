@@ -108,6 +108,7 @@ static int cmd_si(char *args){
 
 static int cmd_info(char *args){
   char *arg = strtok("NULL", " ");
+  printf("%s", arg);
   if(strcmp(arg, "r") == 0){
 	for(int i=0; i<8; i++) printf("%s %x\n", regsl[i], cpu.gpr[i]._32);
 	for(int i=0; i<8; i++) printf("%s %x\n", regsw[i], cpu.gpr[i]._16);
