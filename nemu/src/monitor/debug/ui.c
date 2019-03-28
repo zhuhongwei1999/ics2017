@@ -79,10 +79,14 @@ static int cmd_help(char *args) {
 }
 
 static int cmd_si(char *args){
-  printf("%s", args);
   char *arg = strtok(NULL, " ");
-  int step = 1;
-  sscanf(arg, "%d", &step);
+  int step;
+
+  if(arg != NULL){
+	sscanf(arg, "%d", &step);
+  }
+  else step = 1;
+
   for(int i=1; i<=step; i++){
 	cpu_exec(1);
   }
