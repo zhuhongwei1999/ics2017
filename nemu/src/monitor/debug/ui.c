@@ -80,9 +80,9 @@ static int cmd_help(char *args) {
 
 static int cmd_si(char *args){
   char *arg = strtok(NULL, " ");
+  printf("%s", arg);
   int step = 1;
   sscanf(arg, "%d", &step);
-  printf("%s", arg);
   for(int i=1; i<=step; i++){
 	cpu_exec(1);
   }
