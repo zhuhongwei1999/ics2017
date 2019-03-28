@@ -39,6 +39,7 @@ static int cmd_q(char *args) {
 static int cmd_help(char *args);
 static int cmd_si(char *args);
 static int cmd_info(char *args);
+static int cmd_x(char *args);
 
 static struct {
   char *name;
@@ -50,6 +51,7 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
   { "si", "Execute one or more steps", cmd_si},
   { "info", "Print the register's information", cmd_info},
+  { "x", "Scan memory", cmd_x},
 
   /* TODO: Add more commands */
 
@@ -109,15 +111,30 @@ static int cmd_si(char *args){
 static int cmd_info(char *args){
   char *arg = strtok(NULL, " ");
   if(strcmp(arg, "r") == 0){
-	for(int i=0; i<8; i++) printf("%s %x\n", regsl[i], cpu.gpr[i]._32);
-	for(int i=0; i<8; i++) printf("%s %x\n", regsw[i], cpu.gpr[i]._16);
+	for(int i=0; i<8; i++) printf("%s:\t%8x\n", regsl[i], cpu.gpr[i]._32);
+	for(int i=0; i<8; i++) printf("%s:\t%8x\n", regsw[i], cpu.gpr[i]._16);
 	for(int i=0; i<8; i++){
 	  for(int j=0; j<2; j++){
-		printf("%s %x\n", regsb[i], cpu.gpr[i]._8[j]);
+		printf("%s:\t%8x\n", regsb[i], cpu.gpr[i]._8[j]);
       }
     }
   }
   return 1; 
+}
+
+static int cmd_x(char *args){
+  char *arg1 = strtok(NULL, " ");
+  char *arg2 = strtok(NULL, " ");
+  int len;
+  vaddr_t addr;
+  sscanf(arg1, "%d", &len);
+  sscanf(arg2, "%x", &addr);
+  printf("Address\tDword block\tByte sequence\n");
+  for(int i=0; i<len; i++){
+	printf("%x", vaddr_read(addr, 4));
+	addr += 4;
+  }
+  return 1;
 }
 
 void ui_mainloop(int is_batch_mode) {
