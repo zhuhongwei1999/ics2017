@@ -79,23 +79,27 @@ static int cmd_help(char *args) {
 }
 
 static int cmd_si(char *args){
+  /* extract the first argument  */
   char *arg = strtok(NULL, " ");
   int step;
 
   if(arg != NULL){
 	sscanf(arg, "%d", &step);
   }
-  else step = 1;
+  else step = 1; /* no argument given, default step = 1 */
 
+  /* step is -1, the same function as command 'c' */ 
   if(step == -1){
 	cpu_exec(-1);
 	return 0;	
   }
-   else if(step >= 1){
+  /* step is positive, execute N times using a for loop */
+  else if(step >= 1){
 	for(int i=1; i<=step; i++){
 	  cpu_exec(1);
 	}
   }
+  /* illegal argument, send error */
   else printf("Unknown command '%s'\n", arg);
   return 1;
 }
