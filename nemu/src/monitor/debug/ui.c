@@ -87,9 +87,16 @@ static int cmd_si(char *args){
   }
   else step = 1;
 
-  for(int i=1; i<=step; i++){
-	cpu_exec(1);
+  if(step == -1){
+	cpu_exec(-1);
+	return 0;	
   }
+   else if(step >= 1){
+	for(int i=1; i<=step; i++){
+	  cpu_exec(1);
+	}
+  }
+  else printf("Unknown command '%s'\n", arg);
   return 1;
 }
 
