@@ -111,12 +111,12 @@ static int cmd_info(char *args){
   printf("%s", arg);
   if(strcmp(arg, "r") == 0){
 	for(int i=0; i<8; i++) printf("%s %x\n", regsl[i], cpu.gpr[i]._32);
-	for(int i=0; i<8; i++) printf("%s %x\n", regsw[i], cpu.gpr[i]._16);
+	/*for(int i=0; i<8; i++) printf("%s %x\n", regsw[i], cpu.gpr[i]._16);
 	for(int i=0; i<8; i++){
 	  for(int j=0; j<2; j++){
 		printf("%s %x\n", regsb[i], cpu.gpr[i]._8[j]);
       }
-    }
+    }*/
   }
   return 1; 
 }
