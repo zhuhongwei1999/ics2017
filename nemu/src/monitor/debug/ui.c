@@ -131,7 +131,7 @@ static int cmd_x(char *args){
   sscanf(arg2, "%x", &addr);
   printf("Address\tDword block\tByte sequence\n");
   for(int i=0; i<len; i++){
-	printf("%x", vaddr_read(addr, 4));
+	printf("%8x ", vaddr_read(addr, 4));
 	addr += 4;
   }
   return 1;
