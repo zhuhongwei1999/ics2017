@@ -137,8 +137,7 @@ static int cmd_x(char *args){
   len = atoi(arg1);
   sscanf(arg2, "%x", &addr);
   for(int i=1; i<=len; i++){
-	printf("0x%x\n", vaddr_read(addr, 8));
-	addr += 4;
+	printf("0x%x", addr+i*4);
   }
   
   return 1;
