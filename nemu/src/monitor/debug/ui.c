@@ -139,7 +139,7 @@ static int cmd_x(char *args){
   for(int i=0; i<len; i++){
 	printf("0x%x ", addr);
 	printf("0x%x ", vaddr_read(addr, 4));
-	printf("%02x %02x %02x %02x", vaddr_read(addr+1, 1), vaddr_read(addr+1, 1), vaddr_read(addr+2, 1), vaddr_read(addr+3, 1));
+	printf("%02x %02x %02x %0x", vaddr_read(addr, 1), vaddr_read(addr+1, 1), vaddr_read(addr+2, 1), vaddr_read(addr+3, 1));
 	printf("\n");
 	addr += 4; 
   }
