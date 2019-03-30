@@ -109,13 +109,18 @@ static int cmd_si(char *args){
 }
 
 static int cmd_info(char *args){
+  /* exract the first argument */
   char *arg = strtok(NULL, " ");
+  /* argument is 'r', print current registers' value */
   if(strcmp(arg, "r") == 0){
-	for(int i=0; i<8; i++) printf("%s:\t0x%x\t%d\n", regsl[i], cpu.gpr[i]._32, cpu.gpr[i]._32);
-	for(int i=0; i<8; i++) printf("%s:\t0x%x\t%d\n", regsw[i], cpu.gpr[i]._16, cpu.gpr[i]._16);
+    /* print 32-bit registers */
+	for(int i=0; i<8; i++) printf("%s\t0x%x\t%d\n", regsl[i], cpu.gpr[i]._32, cpu.gpr[i]._32);
+	/* print 16-bit registers */
+	for(int i=0; i<8; i++) printf("%s\t0x%x\t%d\n", regsw[i], cpu.gpr[i]._16, cpu.gpr[i]._16);
+	/* print 8-bit registers */
 	for(int i=0; i<8; i++){
 	  for(int j=0; j<2; j++){
-		printf("%s:\t0x%x\t%d\n", regsb[i], cpu.gpr[i]._8[j], cpu.gpr[i]._8[j]);
+		printf("%s\t0x%x\t%d\n", regsb[i], cpu.gpr[i]._8[j], cpu.gpr[i]._8[j]);
       }
     }
   }
