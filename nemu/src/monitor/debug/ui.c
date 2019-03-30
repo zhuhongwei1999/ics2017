@@ -83,6 +83,7 @@ static int cmd_help(char *args) {
 }
 
 static int cmd_si(char *args){
+  //printf("%s" args);
   /* extract the first argument  */
   char *arg = strtok(NULL, " ");
   int step;
@@ -129,7 +130,6 @@ static int cmd_x(char *args){
   vaddr_t addr;
   sscanf(arg1, "%d", &len);
   sscanf(arg2, "%x", &addr);
-  printf("Address\tDword block\tByte sequence\n");
   for(int i=0; i<len; i++){
 	printf("%#8x ", vaddr_read(addr, 4));
 	addr += 4;

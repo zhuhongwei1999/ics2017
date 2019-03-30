@@ -27,12 +27,11 @@ typedef union {
    * in PA2 able to directly access these registers.
    */
   struct{
-  rtlreg_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
-
-  vaddr_t eip;
+    rtlreg_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
   };
-
+  vaddr_t eip;
 } CPU_state;
+
 
 extern CPU_state cpu;
 
