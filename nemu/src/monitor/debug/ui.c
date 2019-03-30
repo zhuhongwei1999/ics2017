@@ -138,8 +138,10 @@ static int cmd_x(char *args){
   sscanf(arg2, "%x", &addr);
   printf("Address Dword block Byte sequence\n");
   for(int i=0; i<len; i++){
-	printf("0x%x ", addr);
-	printf("0x%x   ", vaddr_read(addr, 4));
+	printf("0x%8x ", addr);
+	/* print 4 successive bytes by hexadecimal */
+	printf("0x%8x   ", vaddr_read(addr, 4));
+	/* print sequence in each byte */
 	printf("%02x %02x %02x %02x", vaddr_read(addr, 1), vaddr_read(addr+1, 1), vaddr_read(addr+2, 1), vaddr_read(addr+3, 1));
 	printf("\n");
 	addr += 4; 
