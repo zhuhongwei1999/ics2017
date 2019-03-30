@@ -130,14 +130,7 @@ static int cmd_info(char *args){
 static int cmd_x(char *args){
   char *arg1 = strtok(NULL, " ");
   char *arg2 = strtok(NULL, " ");
-  int len;
-  vaddr_t addr;
-  sscanf(arg1, "%d", &len);
-  sscanf(arg2, "%x", &addr);
-  for(int i=0; i<len; i++){
-	printf("%#8x ", vaddr_read(addr, 4));
-	addr += 4;
-  }
+  printf("%s,%s", arg1, arg2);
   return 1;
 }
 
