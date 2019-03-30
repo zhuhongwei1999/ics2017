@@ -83,7 +83,6 @@ static int cmd_help(char *args) {
 }
 
 static int cmd_si(char *args){
-  printf("%s", args);
   /* extract the first argument  */
   char *arg = strtok(NULL, " ");
   int step;
@@ -149,7 +148,6 @@ void ui_mainloop(int is_batch_mode) {
 
     /* extract the first token as the command */
     char *cmd = strtok(str, " ");
-	printf("%s", cmd);
     if (cmd == NULL) { continue; }
 
     /* treat the remaining string as the arguments,
