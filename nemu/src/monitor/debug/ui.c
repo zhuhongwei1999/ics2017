@@ -83,7 +83,7 @@ static int cmd_help(char *args) {
 }
 
 static int cmd_si(char *args){
-  //printf("%s" args);
+  printf("%s", args);
   /* extract the first argument  */
   char *arg = strtok(NULL, " ");
   int step;
