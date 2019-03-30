@@ -134,10 +134,14 @@ static int cmd_x(char *args){
   int len;
   vaddr_t addr;
   /* convert string to numerical value */
-  len = atoi(arg1);
+  sscanf(arg1, "%d", &len);
   sscanf(arg2, "%x", &addr);
-  for(int i=1; i<=len; i++){
-	printf("0x%x", addr+i*4);
+  for(int i=0; i<len; i++){
+	printf("0x%x", addr);
+	printf("0x%x", vaddr_read(addr, 4));
+	printf("0x%x 0x%x 0x%x 0x%x", vaddr_read(addr+1, 1), vaddr_read(addr+1, 1), vaddr_read(addr+2, 1), vaddr_read(addr+3, 1));
+	printf("\n");
+	addr += 4; 
   }
   
   return 1;
