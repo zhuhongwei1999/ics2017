@@ -99,9 +99,7 @@ static int cmd_si(char *args){
   }
   /* step is positive, execute N times using a for loop */
   else if(step >= 1){
-	for(int i=1; i<=step; i++){
-	  cpu_exec(1);
-	}
+	  cpu_exec(step);
   }
   /* illegal argument, send error */
   else printf("Unknown command '%s'\n", arg);
