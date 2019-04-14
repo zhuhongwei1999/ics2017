@@ -98,6 +98,8 @@ static bool make_token(char *e) {
 
         Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
+				for(int j=0; i<32; j++) tokens[nr_token].str[j] = '\0';
+				strncpy(tokens[nr_token].str, e+position, substr_len);
         position += substr_len;
 
         /* TODO: Now a new token is recognized with rules[i]. Add codes
@@ -273,7 +275,6 @@ uint32_t eval(int p, int q) {
       uint32_t sum = 0;
       if (tokens[p].type == TK_DEC){
         sscanf(tokens[p].str, "%d", &sum);
-				printf("s%s", tokens[p].str);
 				return sum;
       }
       else if (tokens[p].type == TK_HEX){
