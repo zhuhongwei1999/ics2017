@@ -210,7 +210,7 @@ int find_dominated_op(int p, int q){
          }
       }
 
-      if(tokens[i].type==TK_PLUS || tokens[i].type==TK_SUB){
+      else if(tokens[i].type==TK_PLUS || tokens[i].type==TK_SUB){
         if(op_type != TK_LS && op_type != TK_RS &&
          op_type != TK_BIG_EQ && op_type != TK_SMALL_EQ && op_type != TK_SMALL && op_type != TK_BIG && 
          op_type != TK_NOT_EQ && op_type != TK_EQ && op_type != TK_AND && op_type != TK_OR){
@@ -219,7 +219,7 @@ int find_dominated_op(int p, int q){
         }
       }
 
-      if(tokens[i].type==TK_LS || tokens[i].type==TK_RS){
+      else if(tokens[i].type==TK_LS || tokens[i].type==TK_RS){
         if(op_type != TK_BIG_EQ && op_type != TK_SMALL_EQ && op_type != TK_SMALL && op_type != TK_BIG && 
           op_type != TK_NOT_EQ && op_type != TK_EQ && op_type != TK_AND && op_type != TK_OR){
           op_type = tokens[i].type;
@@ -227,35 +227,35 @@ int find_dominated_op(int p, int q){
         }
       }
 
-      if(tokens[i].type==TK_BIG_EQ || tokens[i].type==TK_SMALL_EQ || tokens[i].type==TK_BIG || tokens[i].type==TK_SMALL){
+      else if(tokens[i].type==TK_BIG_EQ || tokens[i].type==TK_SMALL_EQ || tokens[i].type==TK_BIG || tokens[i].type==TK_SMALL){
         if(op_type != TK_NOT_EQ && op_type != TK_EQ && op_type != TK_AND && op_type != TK_OR){
           op_type = tokens[i].type;
           op = i;
         }
       }
 
-      if(tokens[i].type==TK_EQ || tokens[i].type==TK_NOT_EQ){
+      else if(tokens[i].type==TK_EQ || tokens[i].type==TK_NOT_EQ){
         if(op_type != TK_AND && op_type != TK_OR){
           op_type = tokens[i].type;
           op = i;
         }
       }
 
-      if(tokens[i].type==TK_EQ || tokens[i].type==TK_NOT_EQ){
+      else if(tokens[i].type==TK_EQ || tokens[i].type==TK_NOT_EQ){
         if(op_type != TK_AND && op_type != TK_OR){
           op_type = tokens[i].type;
           op = i;
         }
       }
 
-      if(tokens[i].type==TK_AND){
+      else if(tokens[i].type==TK_AND){
         if(op_type != TK_OR){
           op_type = tokens[i].type;
           op = i;
         }
       }
 
-      if(tokens[i].type==TK_OR){
+      else if(tokens[i].type==TK_OR){
         op_type = tokens[i].type;
         op = i;
       }
