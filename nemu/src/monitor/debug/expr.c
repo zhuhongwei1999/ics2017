@@ -270,7 +270,7 @@ uint32_t eval(int p, int q) {
       assert(0);
     }
     else if (p == q) {
-      uint32_t sum;
+      uint32_t sum = 0;
       if (tokens[p].type == TK_DEC){
         sscanf(tokens[p].str, "%d", &sum);
       }
@@ -281,6 +281,7 @@ uint32_t eval(int p, int q) {
         printf("Bad Expression!\n");
         assert(0);
       }
+			printf("%d\n", sum);
       return sum;
     }
         /* Single token.
