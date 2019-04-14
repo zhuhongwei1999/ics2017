@@ -184,12 +184,15 @@ bool check_parentheses(int p, int q){
     for(int i=p+1; i<q; i++){
       if(tokens[i].type == TK_LBRACE) cnt++;
       else if(tokens[i].type == TK_RBRACE) cnt--;
-      if(cnt < 0) return false;
+      if(cnt < 0){
+        printf("false");
+        return false;
+      }
     }
     if(cnt == 0) return true;
-    else return false;
+    else{printf("false");return false;}
   }
-  else return false;
+  else {printf("false");return false;}
 }
 
 int find_dominated_op(int p, int q){
