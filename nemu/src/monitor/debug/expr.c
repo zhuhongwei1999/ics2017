@@ -157,6 +157,9 @@ static bool make_token(char *e) {
           case TK_DEC:
             tokens[nr_token++].type = TK_DEC;
             break;
+          case TK_REG:
+            tokens[nr_token++].type = TK_REG;
+            break;
           default:
             break;
         }
