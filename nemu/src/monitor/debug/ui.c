@@ -53,7 +53,7 @@ static struct {
   { "si", "Execute one or more steps", cmd_si},
   { "info", "Print the register's information", cmd_info},
   { "x", "Scan memory", cmd_x},
-  { "p", "Expression Value", cmd_p},
+  { "p", "Expression Value", cmd_p}
 
   /* TODO: Add more commands */
 
@@ -151,9 +151,8 @@ static int cmd_x(char *args){
 }
 
 static int cmd_p(char *args){
-  char *arg = strtok(NULL, " ");
   bool *success = false;
-  printf("%d\n", expr(arg, success));
+  printf("%d", expr(args, success));
   return 1;
 }
 
