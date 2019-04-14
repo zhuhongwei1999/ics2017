@@ -99,10 +99,10 @@ static bool make_token(char *e) {
         Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
-        for (int j = 0; j < 32; j++)
-          tokens[nr_token].str[j] = '\0';
-        //???????????
-        strncpy(tokens[nr_token].str, e + position, substr_len);
+        // for (int j = 0; j < 32; j++)
+        //   tokens[nr_token].str[j] = '\0';
+        // //???????????
+        // strncpy(tokens[nr_token].str, e + position, substr_len);
         position += substr_len;
         /* TODO: Now a new token is recognized with rules[i]. Add codes
          * to record the token in the array `tokens'. For certain types
@@ -375,13 +375,28 @@ uint32_t eval(int p, int q) {
     }
 }
 
+bool is_num(int i){
+  if(tokens[i].type!=TK_DEC && tokens[i].type!=TK_HEX && tokens[i].type!=TK_LBRACE){
+    return false;
+  }
+  else return true;
+}
+
 uint32_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     success = false;
     return 0;
   }
 
-  /* TODO: Insert codes to evaluate the expression. */
 
+  /* TODO: Insert codes to evaluate the expression. */
+  for(int i=0; i<nr_token; i++){
+    if(tokens[i].type==TK_SUB && (i==0 || !is_num(i-1))){
+      tokens[i].type = TK_NEG;
+    }
+    else if(tokens[i].type==TK_MUL && (i==0 || !is_num(i-1))){
+      tokens[i].type = DEREF;
+    }
+  }
   return eval(0, nr_token-1);
 }
