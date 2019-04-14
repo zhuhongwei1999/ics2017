@@ -158,11 +158,11 @@ static bool make_token(char *e) {
           case TK_EQ:
             tokens[nr_token++].type = TK_EQ;
             break;
-          case TK_DEC:
-            tokens[nr_token++].type = TK_DEC;
-            break;
           case TK_HEX:
             tokens[nr_token++].type = TK_HEX;
+            break;
+          case TK_DEC:
+            tokens[nr_token++].type = TK_DEC;
             break;
           case TK_REG:
             tokens[nr_token++].type = TK_REG;
@@ -273,7 +273,6 @@ uint32_t eval(int p, int q) {
       assert(0);
     }
     else if (p == q) {
-      //?????????????
       uint32_t sum = 0;
       if (tokens[p].type == TK_DEC){
         sscanf(tokens[p].str, "%d", &sum);
@@ -302,7 +301,6 @@ uint32_t eval(int p, int q) {
         uint32_t op, val_1, val_2, result;
         op = find_dominated_op(p, q);
         if(op == -1){
-          //?????"-","$"??????????
           int k = p;
           while(tokens[k].type==TK_NEG || tokens[k].type==TK_$ || tokens[k].type==DEREF) k++;
 
@@ -325,8 +323,6 @@ uint32_t eval(int p, int q) {
           }
           return result;
         }
-
-        //?????????????????????
         val_1 = eval(p, op - 1);
         val_2 = eval(op + 1, q);
         
