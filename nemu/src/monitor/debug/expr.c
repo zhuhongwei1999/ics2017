@@ -261,7 +261,6 @@ int find_dominated_op(int p, int q){
       }
     }
   }
-  printf("%d\n", op);
   return op;
 }
 
