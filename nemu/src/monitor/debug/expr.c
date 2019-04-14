@@ -273,15 +273,15 @@ uint32_t eval(int p, int q) {
         sscanf(tokens[p].str, "%x", &sum);
       }
       else if(tokens[p].type == TK_REG){
-        if(strcmp(tokens[p].str, "$eax")==0) return cpu.eax;
-        else if(strcmp(tokens[p].str, "$ebx")==0) return cpu.ebx;
-        else if(strcmp(tokens[p].str, "$ecx")==0) return cpu.ecx;
-        else if(strcmp(tokens[p].str, "$edx")==0) return cpu.edx;
-        else if(strcmp(tokens[p].str, "$esp")==0) return cpu.esp;
-        else if(strcmp(tokens[p].str, "$esi")==0) return cpu.esi;
-        else if(strcmp(tokens[p].str, "$edi")==0) return cpu.edi;
-        else if(strcmp(tokens[p].str, "$ebp")==0) return cpu.ebp;
-        else if(strcmp(tokens[p].str, "$eip")==0) return cpu.eip;
+        if(strcmp(tokens[p].str, "$eax")==0) sum = cpu.eax;
+        else if(strcmp(tokens[p].str, "$ebx")==0) sum = cpu.ebx;
+        else if(strcmp(tokens[p].str, "$ecx")==0) sum = cpu.ecx;
+        else if(strcmp(tokens[p].str, "$edx")==0) sum = cpu.edx;
+        else if(strcmp(tokens[p].str, "$esp")==0) sum = cpu.esp;
+        else if(strcmp(tokens[p].str, "$esi")==0) sum = cpu.esi;
+        else if(strcmp(tokens[p].str, "$edi")==0) sum = cpu.edi;
+        else if(strcmp(tokens[p].str, "$ebp")==0) sum = cpu.ebp;
+        else if(strcmp(tokens[p].str, "$eip")==0) sum = cpu.eip;
       }
       else{
         printf("Bad Expression!\n");
