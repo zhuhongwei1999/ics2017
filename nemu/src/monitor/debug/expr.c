@@ -11,7 +11,7 @@ enum {
   TK_SMALL_EQ = 252, TK_LS = 251, TK_RS = 250, TK_PLUS = 249, TK_SUB = 248, 
   TK_MUL = 247, TK_DIV = 246, TK_EQ = 245, TK_DEC = 244, TK_HEX = 243, TK_POINT = 242, 
   TK_MOD = 241, TK_OR = 240, TK_AND = 239, TK_NOT = 238, TK_$ = 237, TK_NOT_EQ = 236, 
-  TK_NEG = 235, TK_LBRACE = 234, TK_RBRACE = 233, TK_REG = 232
+  TK_NEG = 235, TK_LBRACE = 234, TK_RBRACE = 233, TK_REG = 232, DEREF = 231
 
   /* TODO: Add more token types */
 
@@ -98,8 +98,6 @@ static bool make_token(char *e) {
 
         Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
-				for(int j=0; j<32; j++) tokens[nr_token].str[j] = '\0';
-				strncpy(tokens[nr_token].str, e+position, substr_len);
         position += substr_len;
 
         /* TODO: Now a new token is recognized with rules[i]. Add codes
@@ -167,7 +165,7 @@ static bool make_token(char *e) {
             tokens[nr_token++].type = TK_REG;
             break;
           default:
-            TODO();
+            break;
         }
         break;
       }
@@ -191,12 +189,12 @@ bool check_parentheses(int p, int q){
       if(cnt < 0) return false;
     }
     if(cnt == 0) return true;
-		else return false;
+    else return false;
   }
   else return false;
 }
 
-int domiant_operator(int p, int q){
+int find_dominated_op(int p, int q){
   int op = -1, cnt = 0, op_type = -1;
   for(int i=p; i<=q; i++){
     if(tokens[i].type == TK_LBRACE) cnt++;
@@ -272,19 +270,19 @@ uint32_t eval(int p, int q) {
       assert(0);
     }
     else if (p == q) {
-      uint32_t sum = 0;
+      //?????????????
+      uint32_t sum;
       if (tokens[p].type == TK_DEC){
         sscanf(tokens[p].str, "%d", &sum);
-				return sum;
       }
       else if (tokens[p].type == TK_HEX){
         sscanf(tokens[p].str, "%x", &sum);
-				return sum;
       }
       else{
         printf("Bad Expression!\n");
         assert(0);
       }
+      return sum;
     }
         /* Single token.
         * For now this token should be a number.
@@ -299,24 +297,37 @@ uint32_t eval(int p, int q) {
     else {
         /* We should do more things here. */
         uint32_t op, val_1, val_2, result;
-        op = domiant_operator(p, q);
+        op = find_dominated_op(p, q);
         if(op == -1){
-          if(tokens[p].type == TK_NEG){
-            sscanf(tokens[q].str, "%x", &result);
-            result = -result;
-          }
+          //?????"-","$"??????????
+          int k = p;
+          while(tokens[k].type==TK_NEG || tokens[k].type==TK_$ || tokens[k].type==DEREF) k++;
 
-          if(tokens[p].type == TK_$){
-            if (strcmp("eip", tokens[q].str) == 0) result = cpu.eip;
-            for (int i = 0; i < 8; i++)
-              if (strcmp(regsl[i], tokens[q].str) == 0) result = cpu.gpr[i]._32;
+          for(int i=k-1; i>=p; i--){
+            if(tokens[i].type == TK_NEG){
+              sscanf(tokens[i+1].str, "%d", &result);
+              result = -result;
             }
-
+            else if(tokens[i].type == TK_$){
+              if (strcmp("eip", tokens[i+1].str) == 0) result = cpu.eip;
+              for (int j = 0; j < 8; j++){
+                if(strcmp(regsl[j], tokens[i+1].str) == 0)
+                result = cpu.gpr[j]._32;
+              }
+            }
+            else if(tokens[i].type == DEREF){
+              sscanf(tokens[i+1].str, "%d", &result);
+              result = vaddr_read(result, 4);
+            }
+          }
           return result;
         }
+
+        //?????????????????????
         val_1 = eval(p, op - 1);
         val_2 = eval(op + 1, q);
-
+        
+        //????
         switch (tokens[op].type){
           case TK_PLUS:
             return val_1 + val_2;
@@ -367,6 +378,7 @@ uint32_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
+  TODO();
 
   return eval(0, nr_token-1);
 }
