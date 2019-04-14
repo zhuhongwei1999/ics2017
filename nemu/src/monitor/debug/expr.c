@@ -312,7 +312,7 @@ uint32_t eval(int p, int q) {
               }
             }
             else if(tokens[i].type == DEREF){
-              sscanf(tokens[i+1].str, "%d", &result);
+              sscanf(tokens[i+1].str, "%x", &result);
               printf("%d", result);
               result = vaddr_read(result, 4);
             }
