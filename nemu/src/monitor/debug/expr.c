@@ -178,34 +178,20 @@ static bool make_token(char *e) {
   return true;
 }
 
-bool check_parentheses(int p, int q)
-{
-  if (tokens[p].type == TK_LBRACE && tokens[q].type == TK_RBRACE)
-  {
-    int i, j, rValue, flag;
-    for (rValue = q - 1, i = p + 1; i <= rValue; i++)
-    {
-      if (tokens[i].type == TK_LBRACE)
-      {
-        for (flag = 0, j = rValue; j > i; j--)
-        {
-          if (tokens[j].type == TK_RBRACE)
-          {
-            rValue = j - 1;
-            flag = 1;
-          }
-        }
-        if (flag == 0) //?????????????
-          return false;
-      }
-      else if (tokens[i].type == TK_RBRACE)
-      { //??????
+bool check_parentheses(int p, int q){
+  if(tokens[p].type == TK_LBRACE && tokens[q].type == TK_RBRACE){
+    int cnt = 0;
+    for(int i=p+1; i<q; i++){
+      if(tokens[i].type == TK_LBRACE) cnt++;
+      else if(tokens[i].type == TK_RBRACE) cnt--;
+      if(cnt < 0){
         return false;
       }
     }
-    return true;
+    if(cnt == 0) return true;
+    else return false;
   }
-  return false;
+  else return false;
 }
 
 int find_dominated_op(int p, int q){
@@ -275,6 +261,7 @@ int find_dominated_op(int p, int q){
       }
     }
   }
+  printf("%d", op_type);
   return op;
 }
 
