@@ -278,6 +278,7 @@ uint32_t eval(int p, int q) {
         sscanf(tokens[p].str, "%d", &sum);
       }
       else if (tokens[p].type == TK_HEX){
+        printf("hex");
         sscanf(tokens[p].str, "%x", &sum);
       }
       else{
