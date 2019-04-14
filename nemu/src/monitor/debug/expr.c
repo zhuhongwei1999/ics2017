@@ -10,7 +10,7 @@ enum {
   TK_NOTYPE = 256, TK_BIG = 255, TK_SMALL = 254, TK_BIG_EQ = 253, 
   TK_SMALL_EQ = 252, TK_LS = 251, TK_RS = 250, TK_PLUS = 249, TK_SUB = 248, 
   TK_MUL = 247, TK_DIV = 246, TK_EQ = 245, TK_DEC = 244, TK_HEX = 243, TK_POINT = 242, 
-  TK_MOD = 241, TK_OR = 240, TK_AND = 239, TK_NOT = 238, TK_$ = 237, TK_NOT_EQ = 236, 
+  TK_MOD = 241, TK_OR = 240, TK_AND = 239, TK_NOT = 238, TK_NOT_EQ = 236, 
   TK_NEG = 235, TK_LBRACE = 234, TK_RBRACE = 233, TK_REG = 232, DEREF = 231
 
   /* TODO: Add more token types */
@@ -45,7 +45,6 @@ static struct rule {
 	{"&&", TK_AND},
 	{"\\|\\|", TK_OR},
 	{"!", TK_NOT},
-	{"\\$", TK_$},
 	{"!=", TK_NOT_EQ},
 	{"\\(", TK_LBRACE},
 	{"\\)", TK_RBRACE},
@@ -113,9 +112,6 @@ static bool make_token(char *e) {
             break;
           case TK_RBRACE:
             tokens[nr_token++].type = TK_RBRACE;
-            break;
-          case TK_$:
-            tokens[nr_token++].type = TK_$;
             break;
           case TK_MUL:
             tokens[nr_token++].type = TK_MUL;
@@ -277,6 +273,17 @@ uint32_t eval(int p, int q) {
       else if (tokens[p].type == TK_HEX){
         sscanf(tokens[p].str, "%x", &sum);
       }
+      else if(tokens[p].type == TK_REG){
+        if(strcmp(tokens[p].str, "$eax")==0) return cpu.eax;
+        else if(strcmp(tokens[p].str, "$ebx")==0) return cpu.ebx;
+        else if(strcmp(tokens[p].str, "$ecx")==0) return cpu.ecx;
+        else if(strcmp(tokens[p].str, "$edx")==0) return cpu.edx;
+        else if(strcmp(tokens[p].str, "$esp")==0) return cpu.esp;
+        else if(strcmp(tokens[p].str, "$esi")==0) return cpu.esi;
+        else if(strcmp(tokens[p].str, "$edi")==0) return cpu.edi;
+        else if(strcmp(tokens[p].str, "$ebp")==0) return cpu.ebp;
+        else if(strcmp(tokens[p].str, "$eip")==0) return cpu.eip;
+      }
       else{
         printf("Bad Expression!\n");
         assert(0);
@@ -299,20 +306,14 @@ uint32_t eval(int p, int q) {
         op = find_dominated_op(p, q);
         if(op == -1){
           int k = p;
-          while(tokens[k].type==TK_NEG || tokens[k].type==TK_$ || tokens[k].type==DEREF) k++;
+          while(tokens[k].type==TK_NEG || tokens[k].type==DEREF) k++;
 
           for(int i=k-1; i>=p; i--){
             if(tokens[i].type == TK_NEG){
               sscanf(tokens[i+1].str, "%d", &result);
               result = -result;
             }
-            else if(tokens[i].type == TK_$){
-              if (strcmp("eip", tokens[i+1].str) == 0) result = cpu.eip;
-              for (int j = 0; j < 8; j++){  
-                if(strcmp(regsl[j], tokens[i+1].str) == 0)
-                result = cpu.gpr[j]._32;
-              }
-            }
+
             else if(tokens[i].type == DEREF){
               sscanf(tokens[i+1].str, "%x", &result);
               printf("%d", result);
