@@ -45,7 +45,7 @@ static struct rule {
 	{"&&", TK_AND},
 	{"\\|\\|", TK_OR},
 	{"!", TK_NOT},
-	{"$", TK_$},
+	{"\\$", TK_$},
 	{"!=", TK_NOT_EQ},
 	{"\\(", TK_LBRACE},
 	{"\\)", TK_RBRACE},
@@ -308,7 +308,7 @@ uint32_t eval(int p, int q) {
             }
             else if(tokens[i].type == TK_$){
               if (strcmp("eip", tokens[i+1].str) == 0) result = cpu.eip;
-              for (int j = 0; j < 8; j++){
+              for (int j = 0; j < 8; j++){  
                 if(strcmp(regsl[j], tokens[i+1].str) == 0)
                 result = cpu.gpr[j]._32;
               }
