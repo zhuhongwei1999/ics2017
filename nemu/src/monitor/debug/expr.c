@@ -261,7 +261,7 @@ int find_dominated_op(int p, int q){
       }
     }
   }
-  printf("%d", op_type);
+  printf("%d\n", op);
   return op;
 }
 
@@ -381,8 +381,6 @@ uint32_t expr(char *e, bool *success) {
     success = false;
     return 0;
   }
-
-
   /* TODO: Insert codes to evaluate the expression. */
   for(int i=0; i<nr_token; i++){
     if(tokens[i].type==TK_SUB && (i==0 || !is_num(i-1))){
