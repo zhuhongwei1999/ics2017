@@ -49,7 +49,6 @@ static struct rule {
 	{"!=", TK_NOT_EQ},
 	{"\\(", TK_LBRACE},
 	{"\\)", TK_RBRACE},
-	{"[a-z]{1,5}", TK_REG},
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -163,9 +162,6 @@ static bool make_token(char *e) {
             break;
           case TK_DEC:
             tokens[nr_token++].type = TK_DEC;
-            break;
-          case TK_REG:
-            tokens[nr_token++].type = TK_REG;
             break;
           default:
             break;
