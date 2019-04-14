@@ -40,7 +40,6 @@ static struct rule {
 	{"\\/", TK_DIV},
   {"0x[0-9a-fA-F]{1,8}", TK_HEX},
 	{"[0-9]{1,10}", TK_DEC},
-	{"\\.", TK_POINT},
 	{"\\%", TK_MOD},
 	{"&&", TK_AND},
 	{"\\|\\|", TK_OR},
