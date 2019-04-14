@@ -47,6 +47,7 @@ static struct rule {
 	{"!=", TK_NOT_EQ},
 	{"\\(", TK_LBRACE},
 	{"\\)", TK_RBRACE},
+  {"\\$[a-z]{3}", TK_REG},
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -62,7 +63,7 @@ void init_regex() {
   char error_msg[128];
   int ret;
 
-  for (i = 0; i < NR_REGEX; i ++) {
+  for (i = 0; i < NR_REGEX; i++) {
     ret = regcomp(&re[i], rules[i].regex, REG_EXTENDED);
     if (ret != 0) {
       regerror(ret, &re[i], error_msg, 128);
