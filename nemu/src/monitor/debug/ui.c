@@ -40,6 +40,7 @@ static int cmd_help(char *args);
 static int cmd_si(char *args);
 static int cmd_info(char *args);
 static int cmd_x(char *args);
+static int cmd_p(char *args);
 
 static struct {
   char *name;
@@ -52,6 +53,7 @@ static struct {
   { "si", "Execute one or more steps", cmd_si},
   { "info", "Print the register's information", cmd_info},
   { "x", "Scan memory", cmd_x},
+  { "p", "Expression Value", cmd_p},
 
   /* TODO: Add more commands */
 
@@ -145,6 +147,13 @@ static int cmd_x(char *args){
 	addr += 4; 
   }
   
+  return 1;
+}
+
+static int cmd_p(char *args){
+  char *arg = strtok(NULL, " ");
+  bool *success = false;
+  printf("%d", expr(arg, success));
   return 1;
 }
 
