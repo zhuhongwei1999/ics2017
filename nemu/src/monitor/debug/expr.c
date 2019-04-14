@@ -274,6 +274,7 @@ uint32_t eval(int p, int q) {
     }
     else if (p == q) {
       uint32_t sum = 0;
+      printf("%d", tokens[p].type);
       if (tokens[p].type == TK_DEC){
         sscanf(tokens[p].str, "%d", &sum);
         printf("dec");
