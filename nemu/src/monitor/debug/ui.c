@@ -42,6 +42,7 @@ static int cmd_info(char *args);
 static int cmd_x(char *args);
 static int cmd_p(char *args);
 static int cmd_w(char *args);
+static int cmd_d(char *args);
 
 static struct {
   char *name;
@@ -56,6 +57,7 @@ static struct {
   { "x", "Scan memory", cmd_x},
   { "p", "Expression Value", cmd_p},
   { "w", "set watchpoints", cmd_w},
+  { "d", "delete watchpoints", cmd_d},
 
   /* TODO: Add more commands */
 
@@ -157,9 +159,14 @@ static int cmd_p(char *args){
   printf("%d\n", expr(args, success));
   return 1;
 }
-
 static int cmd_w(char *args){
   set_watchPoint(args);
+  return 0;
+}
+
+static int cmd_d(char *args){
+  int num = atoi(args);
+  delete_watchpoint(num);
   return 0;
 }
 

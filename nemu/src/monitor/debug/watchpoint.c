@@ -62,7 +62,7 @@ int set_watchPoint(char *e){
 	strcpy(p->expr, e);
 	p->old_val = expr(p->expr, success);
   printf("Set watchpoint #%d\n", p->NO);
-  printf("expr=     %s\n", p->expr);
+  printf("expr     =%s\n", p->expr);
   printf("old value=0x%x\n", p->old_val);
   return p->NO;
 }
@@ -74,6 +74,7 @@ bool delete_watchpoint(int no){
   }
   WP *wp = &wp_pool[no];
   free_wp(wp);
+  printf("Watchpoint %d deleted.", wp->NO);
   return true;
 }
 
