@@ -25,7 +25,6 @@ WP *new_wp(){
     assert(0);
   }
   else{
-    printf("111");
     int num = free_->NO;
     // 将空闲监视点向后移动一个位置
     free_ = free_->next;
@@ -59,12 +58,10 @@ void free_wp(WP* wp){
 
 int set_watchPoint(char *e){
 	WP *p = new_wp();
-  printf("x");
-  return p->NO;
   // bool *success = false;
-	// strcpy(p->expr, e);
+	strcpy(p->expr, e);
 	// p->old_val = expr(p->expr, success);
-  // return p->NO;
+  return p->NO;
 }
 
 bool delete_watchpoint(int no){
