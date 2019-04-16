@@ -25,14 +25,15 @@ WP *new_wp(){
     assert(0);
   }
   else{
-    int num = free_->NO;
-    // 将空闲监视点向后移动一个位置
-    free_ = free_->next;
-    // 将新监视点插入head链表，并将head指向当前节点
-    wp_pool[num].next = head;
-    head = &wp_pool[num];
+    printf("111");
+    // int num = free_->NO;
+    // // 将空闲监视点向后移动一个位置
+    // free_ = free_->next;
+    // // 将新监视点插入head链表，并将head指向当前节点
+    // wp_pool[num].next = head;
+    // head = &wp_pool[num];
   }
-  return head;
+  return free_;
 }
 
 void free_wp(WP* wp){
