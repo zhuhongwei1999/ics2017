@@ -6,7 +6,7 @@
 typedef struct watchpoint {
   int NO;
   struct watchpoint *next;
-  char *expr; //被监视的表达式
+  char expr[100]; //被监视的表达式
   int new_val, old_val; //表达式的新值和旧值
 } WP;
 
