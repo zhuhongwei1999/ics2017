@@ -59,6 +59,7 @@ void free_wp(WP* wp){
 
 int set_watchPoint(char *e){
 	WP *p = new_wp();
+  printf("normal");
   bool *success = false;
 	strcpy(p->expr, e);
 	p->old_val = expr(p->expr, success);
