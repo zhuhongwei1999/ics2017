@@ -159,8 +159,8 @@ static int cmd_p(char *args){
 }
 
 static int cmd_w(char *args){
-  char *arg = strtok(NULL, " ");
-  set_watchPoint(arg);
+  set_watchPoint(args);
+  printf("111");
   return 0;
 }
 
