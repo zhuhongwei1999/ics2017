@@ -41,6 +41,7 @@ static int cmd_si(char *args);
 static int cmd_info(char *args);
 static int cmd_x(char *args);
 static int cmd_p(char *args);
+static int cmd_w(char *args);
 
 static struct {
   char *name;
@@ -53,7 +54,8 @@ static struct {
   { "si", "Execute one or more steps", cmd_si},
   { "info", "Print the register's information", cmd_info},
   { "x", "Scan memory", cmd_x},
-  { "p", "Expression Value", cmd_p}
+  { "p", "Expression Value", cmd_p},
+  { "w", "set watchpoints", cmd_w},
 
   /* TODO: Add more commands */
 
@@ -154,6 +156,12 @@ static int cmd_p(char *args){
   bool *success = false;
   printf("%d\n", expr(args, success));
   return 1;
+}
+
+static int cmd_w(char *args){
+  char *arg = strtok(NULL, " ");
+  set_watchPoint(arg);
+  return 0;
 }
 
 void ui_mainloop(int is_batch_mode) {
