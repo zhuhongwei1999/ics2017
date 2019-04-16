@@ -19,7 +19,6 @@ void init_wp_pool() {
 }
 
 WP *new_wp(){
-  printf("Norm");
   WP *wp = free_;
   // 没有空闲监视点结构的情况,通过 assert(0)终止程序
   if(!free_){
@@ -31,10 +30,9 @@ WP *new_wp(){
     free_ = free_->next;
     // 将新监视点插入head链表，并将head指向当前节点
     wp->next = NULL;
-    if(head) wp->next = head;
-    head = wp;
+    return wp;
   }
-  return wp;
+  return NULL;
 }
 
 void free_wp(WP* wp){
