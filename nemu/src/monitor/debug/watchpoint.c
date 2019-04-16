@@ -26,14 +26,14 @@ WP *new_wp(){
   }
   else{
     printf("111");
-    // int num = free_->NO;
-    // // 将空闲监视点向后移动一个位置
-    // free_ = free_->next;
-    // // 将新监视点插入head链表，并将head指向当前节点
-    // wp_pool[num].next = head;
-    // head = &wp_pool[num];
+    int num = free_->NO;
+    // 将空闲监视点向后移动一个位置
+    free_ = free_->next;
+    // 将新监视点插入head链表，并将head指向当前节点
+    wp_pool[num].next = head;
+    head = &wp_pool[num];
   }
-  return free_;
+  return head;
 }
 
 void free_wp(WP* wp){
@@ -59,10 +59,12 @@ void free_wp(WP* wp){
 
 int set_watchPoint(char *e){
 	WP *p = new_wp();
-  bool *success = false;
-	strcpy(p->expr, e);
-	p->old_val = expr(p->expr, success);
+  printf("x");
   return p->NO;
+  // bool *success = false;
+	// strcpy(p->expr, e);
+	// p->old_val = expr(p->expr, success);
+  // return p->NO;
 }
 
 bool delete_watchpoint(int no){
