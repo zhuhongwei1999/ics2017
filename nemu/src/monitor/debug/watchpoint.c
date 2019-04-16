@@ -19,8 +19,9 @@ void init_wp_pool() {
 }
 
 WP *new_wp(){
+  printf("Norm");
   WP *wp = free_;
-  // 没有空闲监视点结构的情况,通过 assert(0) 马上终止程序
+  // 没有空闲监视点结构的情况,通过 assert(0)终止程序
   if(!free_){
     printf("Memory allocation Failed!");
     assert(0);
@@ -58,13 +59,11 @@ void free_wp(WP* wp){
 }
 
 int set_watchPoint(char *e){
-  printf("normal");
-	// WP *p = new_wp();
-  // bool *success = false;
-	// strcpy(p->expr, e);
-	// p->old_val = expr(p->expr, success);
-  // return p->NO;
-  return 1;
+	WP *p = new_wp();
+  bool *success = false;
+	strcpy(p->expr, e);
+	p->old_val = expr(p->expr, success);
+  return p->NO;
 }
 
 bool delete_watchpoint(int no){
