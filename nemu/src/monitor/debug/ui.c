@@ -160,7 +160,6 @@ static int cmd_p(char *args){
 
 static int cmd_w(char *args){
   set_watchPoint(args);
-  printf("111");
   return 0;
 }
 
