@@ -65,8 +65,8 @@ int set_watchPoint(char *e){
 	strcpy(p->expr, e);
 	p->old_val = expr(p->expr, success);
   printf("Set watchpoint #%d\n", p->NO);
-  printf("expr     =%s\n", p->expr);
-  printf("old value=0x%x\n", p->old_val);
+  printf("expr       =    %s\n", p->expr);
+  printf("old value  =    0x%x\n", p->old_val);
   return p->NO;
 }
 
@@ -90,7 +90,7 @@ void list_watchpoint(){
   else{
     printf("NO    Expr    Old Value\n");
     while(p){
-      printf("%d   %s    0x%x\n", p->NO, p->expr, p->old_val);
+      printf("%d    %s      0x%08x\n", p->NO, p->expr, p->old_val);
       p = p->next;
     }
   }
