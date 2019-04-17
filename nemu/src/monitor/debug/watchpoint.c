@@ -21,7 +21,7 @@ void init_wp_pool() {
 WP *new_wp(){
   // 没有空闲监视点结构的情况,通过 assert(0)终止程序
   if(!free_){
-    printf("Memory allocation Failed!");
+    printf("Memory allocation Failed!\n");
     assert(0);
   }
   else{
@@ -46,8 +46,7 @@ void free_wp(WP* wp){
     p = head;
     // 遍历链表，找到要回收的监视点
     while(p->next){
-      printf("sss\n");
-      if (p->next->NO == wp->NO) {
+        if (p->next->NO == wp->NO) {
         // 删除head链表中的节点，并添加到free_链表中
         p->next = wp->next;
         wp->next = free_;
@@ -77,14 +76,14 @@ bool delete_watchpoint(int no){
   }
   WP *wp = &wp_pool[no];
   free_wp(wp);
-  printf("Watchpoint %d deleted.", wp->NO);
+  printf("Watchpoint %d deleted.\n", wp->NO);
   return true;
 }
 
 void list_watchpoint(){
   WP *p = head;
   if(!head){
-    printf("No watchpoints.");
+    printf("No watchpoints.\n");
     return;
   }
   else{
@@ -94,4 +93,18 @@ void list_watchpoint(){
       p = p->next;
     }
   }
+}
+
+WP* scan_watchpoint(){
+  int new;
+  bool *success = false;
+  WP *wp;
+  for(wp=head; wp; wp=wp->next){
+    new = expr(wp->expr, success);
+    if(new != wp->old_val){
+      wp->new_val = new;
+      return wp;
+    }
+  }
+  return NULL;
 }
