@@ -113,20 +113,18 @@ static int cmd_si(char *args){
 }
 
 static int cmd_info(char *args){
-  /* exract the first argument */
   char *arg = strtok(NULL, " ");
-  /* argument is 'r', print current registers' value */
   if(strcmp(arg, "r") == 0){
-    /* print 32-bit registers */
 	for(int i=0; i<8; i++) printf("%s\t0x%x\t%d\n", regsl[i], cpu.gpr[i]._32, cpu.gpr[i]._32);
-	/* print 16-bit registers */
 	for(int i=0; i<8; i++) printf("%s\t0x%x\t%d\n", regsw[i], cpu.gpr[i]._16, cpu.gpr[i]._16);
-	/* print 8-bit registers */
 	for(int i=0; i<8; i++){
 	  for(int j=0; j<2; j++){
 		printf("%s\t0x%x\t%d\n", regsb[i], cpu.gpr[i]._8[j], cpu.gpr[i]._8[j]);
       }
     }
+  }
+  else if(strcmp(arg, "w") == 0){
+    list_watchpoint();
   }
   return 1; 
 }
@@ -161,13 +159,13 @@ static int cmd_p(char *args){
 }
 static int cmd_w(char *args){
   set_watchPoint(args);
-  return 0;
+  return 1;
 }
 
 static int cmd_d(char *args){
   int num = atoi(args);
   delete_watchpoint(num);
-  return 0;
+  return 1;
 }
 
 void ui_mainloop(int is_batch_mode) {
