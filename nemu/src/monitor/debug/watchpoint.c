@@ -47,11 +47,13 @@ void free_wp(WP* wp){
     // 遍历链表，找到要回收的监视点
     while(p->next){
       printf("sss\n");
-      if (p->next == wp) {
+      if (p->next->NO == wp->NO) {
         // 删除head链表中的节点，并添加到free_链表中
         p->next = wp->next;
         wp->next = free_;
+        break;
       }
+      p = p->next;
     }
   }
   free_ = wp;
