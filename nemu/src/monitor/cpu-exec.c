@@ -31,10 +31,11 @@ void cpu_exec(uint64_t n) {
 #ifdef DEBUG
     WP *p = scan_watchpoint();
     if(p){
-      printf("0x%08x, 0x%08x\n", p->old_val, p->new_val);
+      printf("expr       =%s\n", p->expr);
+      printf("old value  =0x%08x\n", p->old_val);
+      printf("new value  =0x%08x\n", p->new_val);
     }
     nemu_state = NEMU_STOP;
-    /* TODO: check watchpoints here. */
 
 #endif
 
