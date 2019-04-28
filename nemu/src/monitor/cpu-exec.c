@@ -35,7 +35,7 @@ void cpu_exec(uint64_t n) {
       printf("old value  =0x%08x\n", p->old_val);
       printf("new value  =0x%08x\n", p->new_val);
     }
-    nemu_state = NEMU_STOP;
+    //nemu_state = NEMU_STOP;
 
 #endif
 
