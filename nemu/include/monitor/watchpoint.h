@@ -1,22 +1,18 @@
 #ifndef __WATCHPOINT_H__
 #define __WATCHPOINT_H__
+
 #include "common.h"
 
 typedef struct watchpoint {
   int NO;
-  int value;
-  int type;
-  char expr[33];
   struct watchpoint *next;
-
-  /* TODO: Add more members if necessary */
+  char expr[100]; //被监视的表达式
+  int new_val, old_val; //表达式的新值和旧值
 } WP;
 
-WP* new_wp();
-void init_wp_pool();
-void createWatchPoint(char *args);
-WP* searchWatchPoint(int num);
-bool judgeWatchPoint();
-void printAllWatchPoint();
-void free_wp(WP *wp);
+int set_watchPoint(char *e);
+bool delete_watchpoint(int no);
+void list_watchpoint();
+WP* scan_watchpoint();
+
 #endif

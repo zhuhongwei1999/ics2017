@@ -3,6 +3,6 @@
 
 #include "common.h"
 
-uint32_t expr(char *);
+uint32_t expr(char *, bool *);
 
 #endif

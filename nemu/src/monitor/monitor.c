@@ -82,10 +82,8 @@ static inline void load_img() {
 static inline void restart() {
   /* Set the initial instruction pointer. */
   cpu.eip = ENTRY_START;
-  cpu.CS=8;
-  //查i386手册第十章可知
-  cpu.value=0x00000002;
-  cpu.cr0.val=0x60000011;
+  cpu.eflags.val = 0x00000002;
+
 #ifdef DIFF_TEST
   init_qemu_reg();
 #endif
