@@ -161,7 +161,6 @@ void difftest_step(uint32_t eip) {
   if(r.eax!=cpu.eax){
 	  printf("eax:0x%x        0x%x\n", r.eax, cpu.eax);
     printf("eip:0x%x\n", cpu.eip);
-    printf("%d", cpu.eflags.OF);
   }
   if(r.ecx!=cpu.ecx)
 	  printf("ecx:0x%x        0x%x\n", r.ecx, cpu.ecx);
