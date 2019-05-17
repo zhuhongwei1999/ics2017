@@ -2,6 +2,7 @@
 #define __REG_H__
 
 #include "common.h"
+#include "memory/mmu.h"
 
 enum { R_EAX, R_ECX, R_EDX, R_EBX, R_ESP, R_EBP, R_ESI, R_EDI };
 enum { R_AX, R_CX, R_DX, R_BX, R_SP, R_BP, R_SI, R_DI };
@@ -15,39 +16,52 @@ enum { R_AL, R_CL, R_DL, R_BL, R_AH, R_CH, R_DH, R_BH };
  */
 
 typedef struct {
+  // 通用寄存器
   union{
     union {
       uint32_t _32;
       uint16_t _16;
       uint8_t _8[2];
     } gpr[8];
-
-  /* Do NOT change the order of the GPRs' definitions. */
-
-  /* In NEMU, rtlreg_t is exactly uint32_t. This makes RTL instructions
-   * in PA2 able to directly access these registers.
-   */
+    /* Do NOT change the order of the GPRs' definitions. */
+    /* In NEMU, rtlreg_t is exactly uint32_t. This makes RTL instructions
+    * in PA2 able to directly access these registers.
+    */
     struct{
       rtlreg_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
     };
   };
+  // 指令指针寄存器
   vaddr_t eip;
+  // 标志寄存器
   union{
-    uint32_t val;
-    struct{
-      uint32_t CF:1;
-      uint32_t :5;
-      uint32_t ZF:1;
+		uint32_t value;
+		struct{
+			uint32_t CF:1;
+			uint32_t :5;
+			uint32_t ZF:1;
       uint32_t SF:1;
       uint32_t :1;
       uint32_t IF:1;
       uint32_t :1;
       uint32_t OF:1;
       uint32_t :20;
-    };
-  }eflags;
+		};
+	};
+  // 代码段
+  uint32_t CS;
+  // 中断描述符表
+  struct{
+    uint16_t Limit;
+    uint32_t Base;
+  }IDTR;
+  //实现分页机制
+  CR0 cr0;
+  CR3 cr3;
+  //实现中断异常
+  bool INTR;
+  
 } CPU_state;
-
 
 extern CPU_state cpu;
 

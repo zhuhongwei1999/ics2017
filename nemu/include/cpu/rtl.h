@@ -113,10 +113,10 @@ static inline void rtl_sr(int r, int width, const rtlreg_t* src1) {
 
 #define make_rtl_setget_eflags(f) \
   static inline void concat(rtl_set_, f) (const rtlreg_t* src) { \
-    cpu.eflags.f = *src; \
+    cpu.f=*src;\
   } \
   static inline void concat(rtl_get_, f) (rtlreg_t* dest) { \
-    *dest = cpu.eflags.f; \
+    *dest=cpu.f; \
   }
 
 make_rtl_setget_eflags(CF)
@@ -126,66 +126,81 @@ make_rtl_setget_eflags(SF)
 
 static inline void rtl_mv(rtlreg_t* dest, const rtlreg_t *src1) {
   // dest <- src1
-  *dest = *src1;
+  *dest=*src1;
 }
 
 static inline void rtl_not(rtlreg_t* dest) {
   // dest <- ~dest
-  *dest = ~(*dest);
+  rtl_li(dest,~(*dest));
+
 }
 
 static inline void rtl_sext(rtlreg_t* dest, const rtlreg_t* src1, int width) {
   // dest <- signext(src1[(width * 8 - 1) .. 0])
-  int32_t tmp = (int32_t)*src1;
-  tmp <<= 32 - (8 * width);
-  tmp >>= 32 - (8 * width);
-  *dest = tmp;
+  rtlreg_t temp=(int32_t)(*src1);  //符号扩展
+  rtl_shli(&temp,src1,8*(4-width));//先左移再按符号位扩展，再右移
+  rtl_sari(dest,&temp,8*(4-width));
 }
 
 static inline void rtl_push(const rtlreg_t* src1) {
   // esp <- esp - 4
   // M[esp] <- src1
-  cpu.esp -= 4;  //esp减4
-  rtl_sm(&cpu.esp, 4, src1);        //将src1写入esp指向的内存
+  rtl_subi(&cpu.esp,&cpu.esp,4);//通过已经实现的RTL指令给esp减去4
+  rtl_sm(&cpu.esp,4,src1);//把src1写入esp指向的内存,宽度为4个字节
 }
 
 static inline void rtl_pop(rtlreg_t* dest) {
   // dest <- M[esp]
-  // esp <- esp + 4
-  rtl_lm(dest, &cpu.esp, 4);
-  cpu.esp += 4;
+  // esp <- esp + 4 
+  rtl_lm(dest,&cpu.esp,4);//把cpu.esp的值写入dest中
+  rtl_addi(&cpu.esp,&cpu.esp,4);//esp加上4
 }
-
 static inline void rtl_eq0(rtlreg_t* dest, const rtlreg_t* src1) {
   // dest <- (src1 == 0 ? 1 : 0)
-  *dest = (*src1==0);
+  rtl_li(dest,*src1 == 0 ? 1 : 0);
+  
 }
 
 static inline void rtl_eqi(rtlreg_t* dest, const rtlreg_t* src1, int imm) {
   // dest <- (src1 == imm ? 1 : 0)
-  *dest = (*src1==imm);
+  rtl_li(dest,*src1 == imm ? 1 : 0);
 }
 
 static inline void rtl_neq0(rtlreg_t* dest, const rtlreg_t* src1) {
   // dest <- (src1 != 0 ? 1 : 0)
-  *dest = (*src1!=0);
+   rtl_li(dest,*src1 != 0 ? 1 : 0);
 }
 
 static inline void rtl_msb(rtlreg_t* dest, const rtlreg_t* src1, int width) {
   // dest <- src1[width * 8 - 1]
-  *dest = *src1 >> (8*width-1);
+  //把最高位移到末位再跟1相与，可知其符号位
+  rtl_li(dest,((*src1)>>(width*8-1))&0x1);
 }
 
 static inline void rtl_update_ZF(const rtlreg_t* result, int width) {
   // eflags.ZF <- is_zero(result[width * 8 - 1 .. 0])
-  rtl_eq0(&t0, result);
-  rtl_set_ZF(&t0);
+  rtlreg_t temp=0;
+  if(width==1){
+    temp=(*result&0x000000ff)|0;
+    // printf("result=%d,temp:%d\n",*result,temp);
+  }else if(width==2){
+    temp=(*result&0x0000ffff)|0;
+  }else if(width==4){
+    temp=(*result&0xffffffff)|0;
+  }
+  temp=(temp==0)?1:0;
+  // rtl_eq0(&t0,result);
+  
+  rtl_set_ZF(&temp);
 }
 
 static inline void rtl_update_SF(const rtlreg_t* result, int width) {
   // eflags.SF <- is_sign(result[width * 8 - 1 .. 0])
-  rtl_msb(&t1, result, width);
-  rtl_set_SF(&t1);
+  rtlreg_t temp=0;
+  temp=(*result>>(width*8-1))&0x1;
+  // rtl_msb(&t1,result,width);
+  // printf("result:%xwidth:%d\ntemp:%d\n",*result,width,temp);
+  rtl_set_SF(&temp);
 }
 
 static inline void rtl_update_ZFSF(const rtlreg_t* result, int width) {

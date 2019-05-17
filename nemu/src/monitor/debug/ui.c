@@ -52,15 +52,14 @@ static struct {
   { "help", "Display informations about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-  { "si", "Execute one or more steps", cmd_si},
-  { "info", "Print the register's information", cmd_info},
-  { "x", "Scan memory", cmd_x},
-  { "p", "Expression Value", cmd_p},
-  { "w", "set watchpoints", cmd_w},
-  { "d", "delete watchpoints", cmd_d},
 
   /* TODO: Add more commands */
-
+  { "si","Step by step",cmd_si},
+  { "info","Print the states of register",cmd_info},
+  { "x","Scanning memory",cmd_x},
+  { "p","Caculator",cmd_p},
+  { "w","Create new watchpoint",cmd_w},
+  { "d","Delete the watchpoint",cmd_d},
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
@@ -89,74 +88,90 @@ static int cmd_help(char *args) {
 }
 
 static int cmd_si(char *args){
-  if(args == NULL) cpu_exec(1);
-  else{
-    char *temp = strtok(NULL," ");
+  if(args==NULL){
+    cpu_exec(1);//这边的参数为1代表只执行一次
+  }else{
+    char *temp=strtok(NULL," ");
     int n;
-    sscanf(temp, "%d",&n);
-    if(n < -1){
+    sscanf(temp,"%d",&n);
+    if(n<-1){
       printf("The param you input is incorrect!\n");
       return 0;
+    }else if(n==0){
+      cpu_exec(1);
+    }else{
+      cpu_exec(n);
     }
-    else if(n == 0) cpu_exec(1);
-    else cpu_exec(n);
   }
   return 0;
 }
 
-static int cmd_info(char *args){
-  char *arg = strtok(NULL, " ");
-  if(strcmp(arg, "r") == 0){
-	for(int i=0; i<8; i++) printf("%s\t0x%x\t%d\n", regsl[i], cpu.gpr[i]._32, cpu.gpr[i]._32);
-	for(int i=0; i<8; i++) printf("%s\t0x%x\t%d\n", regsw[i], cpu.gpr[i]._16, cpu.gpr[i]._16);
-	for(int i=0; i<8; i++){
-	  for(int j=0; j<2; j++){
-		printf("%s\t0x%x\t%d\n", regsb[i], cpu.gpr[i]._8[j], cpu.gpr[i]._8[j]);
-      }
+void printALlRegisters(){
+	printf("The following are all hexadecimal(0x)\n");
+    for(int i=0;i<8;i++){
+      printf("%s:\t%8x\t",regsl[i],cpu.gpr[i]._32);
+      if(i%2==1)
+        printf("\n");
     }
-  }
-  else if(strcmp(arg, "w") == 0){
-    list_watchpoint();
-  }
-  return 1; 
+    for(int i=0;i<8;i++){
+      printf("%s:\t%8x\t",regsw[i],cpu.gpr[i]._16);
+      if(i%2==1)
+        printf("\n");
+    }
+    for(int i=0,j=0;i<4;i++,j++){
+      printf("%s:\t%8x\t",regsb[j],cpu.gpr[i]._8[0]);
+      j++;
+      printf("%s:\t%8x\t",regsb[j],cpu.gpr[i]._8[1]);
+      printf("\n");	
+    }
+    printf("cpu.CF:%x cpu.OF:%x cpu.SF:%x cpu.ZF:%x\n",cpu.CF,cpu.OF,cpu.SF,cpu.ZF);
+}
+static int cmd_info(char *args){
+  //strtok第一个参数为NULL时
+  //该函数默认使用上一次未分割完的字符串的未分割的起始位置作为本次分割的起始位置
+    char *temp=strtok(NULL," ");
+    if(strcmp(temp,"r")==0)
+    	printALlRegisters();
+  	else if(strcmp(temp,"w")==0)
+    	printAllWatchPoint();
+	return 0;
 }
 
 static int cmd_x(char *args){
-  char *arg1 = strtok(NULL, " ");
-  char *arg2 = strtok(NULL, " ");
-  printf("%s,%s\n", arg1, arg2);
-  int len;
-  vaddr_t addr;
-  /* convert string to numerical value */
-  sscanf(arg1, "%d", &len);
-  sscanf(arg2, "%x", &addr);
-  printf("Address Dword block Byte sequence\n");
-  for(int i=0; i<len; i++){
-	printf("0x%08x ", addr);
-	/* print 4 successive bytes by hexadecimal */
-	printf("0x%08x   ", vaddr_read(addr, 4));
-	/* print sequence in each byte */
-	printf("%02x %02x %02x %02x", vaddr_read(addr, 1), vaddr_read(addr+1, 1), vaddr_read(addr+2, 1), vaddr_read(addr+3, 1));
-	printf("\n");
-	addr += 4; 
+	char *temp=strtok(NULL," ");
+	char *temp_2=strtok(NULL," ");
+	int n;
+	vaddr_t addr;
+	sscanf(temp,"%d",&n);//把字符串变成整数
+	sscanf(temp_2,"%x",&addr);
+  printf("Address               Big-Endian      Little-Endian\n");
+  for(int i=0;i<n;i++){
+    printf("0x%08x            0x%08x      %02x %02x %02x %02x\n",
+    addr+i*4,vaddr_read(addr+i*4,4),vaddr_read(addr+i*4,1),
+    vaddr_read(addr+i*4+1,1),vaddr_read(addr+i*4+2,1),vaddr_read(addr+i*4+3,1));
   }
-  
-  return 1;
+  return 0;
 }
 
 static int cmd_p(char *args){
-  bool *success = false;
-  printf("%d\n", expr(args, success));
+  char *temp=strtok(NULL," ");
+  printf("result =%d\n",expr(temp));
   return 1;
 }
+
 static int cmd_w(char *args){
-  set_watchPoint(args);
+  char *temp=strtok(NULL," "); 
+  createWatchPoint(temp);
   return 1;
 }
 
 static int cmd_d(char *args){
-  int num = atoi(args);
-  delete_watchpoint(num);
+  int num;
+  sscanf(args,"%d",&num);
+  WP *wp;
+  wp=searchWatchPoint(num);
+  if(wp)
+  	free_wp(wp);
   return 1;
 }
 
