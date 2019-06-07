@@ -6,7 +6,6 @@
 #include <time.h>
 #include "syscall.h"
 
-
 // TODO: discuss with syscall interface
 #ifndef __ISA_NATIVE__
 
@@ -27,22 +26,23 @@ int _open(const char *path, int flags, mode_t mode) {
 }
 
 int _write(int fd, void *buf, size_t count){
+  //_exit(SYS_write);
   return _syscall_(SYS_write, fd, (uintptr_t)buf, count);
 }
 
-extern char _end;
-intptr_t pb = (intptr_t)&_end;
+extern char end;
 void *_sbrk(intptr_t increment){
-  intptr_t old_pb = pb;
-  if(_syscall_(SYS_brk, old_pb+increment, 0, 0)==0){
-    pb += increment;
-    return (void *)old_pb;
-  }
-  return (void *)-1;
+  static char *_end = &end;
+  char *new_end = _end + increment;
+  int ret = _syscall_(SYS_brk, (uintptr_t)new_end, 0, 0);
+  if (ret != 0) return (void *)-1;
+  void *old_end = _end;
+  _end = new_end;
+  return old_end;
 }
 
 int _read(int fd, void *buf, size_t count) {
-  return _syscall_(SYS_read, fd, (uintptr_t)buf, count); 
+  return _syscall_(SYS_read, fd, (uintptr_t)buf, count);
 }
 
 int _close(int fd) {
