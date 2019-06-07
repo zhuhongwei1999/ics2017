@@ -4,7 +4,7 @@
 uintptr_t sys_write(int fd, const void *buf, size_t len) {
 	int i = 0;
 	if (fd==1 || fd==2){
-    Log("sys_write\n");
+    Log("sys_write");
 		for(; len>0; len--,i++){
 			_putc(((char*)buf)[i]);
 		}
