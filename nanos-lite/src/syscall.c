@@ -1,6 +1,13 @@
 #include "common.h"
 #include "syscall.h"
 
+extern char _end;
+extern ssize_t fs_read(int fd, void *buf, size_t len);
+extern ssize_t fs_write(int fd, const void *buf, size_t len);
+extern int fs_open(const char *pathname, int flags, int mode);
+extern off_t fs_lseek(int fd, off_t offset, int whence);
+extern int fs_close(int fd);
+
 uintptr_t sys_write(int fd, const void *buf, size_t len) {
 	int i = 0;
 	if (fd==1 || fd==2){
@@ -29,11 +36,28 @@ _RegSet* do_syscall(_RegSet *r) {
       break;
     }
     case SYS_write:{
-      ret = sys_write(a[1], (void *)a[2], a[3]);
+      // ret = sys_write(a[1], (void *)a[2], a[3]);
+      ret = fs_write(a[1],(void *)a[2],a[3]);
       break;
     }
     case SYS_brk:{
       ret = 0;
+      break;
+    }
+		case SYS_read:{
+      ret = fs_read(a[1],(void *)a[2],a[3]);
+			break;  
+    }
+    case SYS_open:{
+      ret = fs_open((char *)a[1],a[2],a[3]);
+      break;
+    }
+		case SYS_close:{
+      ret = fs_close(a[1]);
+      break;
+    }
+		case SYS_lseek:{
+      ret = fs_lseek(a[1],a[2],a[3]);
       break;
     }
 
