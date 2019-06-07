@@ -57,7 +57,7 @@ _RegSet* do_syscall(_RegSet *r) {
       break;
     }
 		case SYS_lseek:{
-      ret = fs_lseek(a[1],a[2],a[3]);
+      ret = fs_lseek(a[1], a[2], a[3]);
       break;
     }
 
