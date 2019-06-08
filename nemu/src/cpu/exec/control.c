@@ -11,6 +11,7 @@ make_EHelper(jcc) {
   // the target address is calculated at the decode stage
   uint8_t subcode = decoding.opcode & 0xf;
   rtl_setcc(&t2, subcode);
+  // printf("decoding.is_jmp:%d\n", t2);
   decoding.is_jmp = t2;
 
   print_asm("j%s %x", get_cc_name(subcode), decoding.jmp_eip);
@@ -24,9 +25,10 @@ make_EHelper(jmp_rm) {
 }
 
 make_EHelper(call) {
-  rtl_push(eip);
-  rtl_addi(&decoding.jmp_eip, eip, id_dest->val);
-  decoding.is_jmp = 1;
+  // the target address is calculated at the decode stage
+  rtl_push(eip);//当前eip入栈
+  rtl_addi(&decoding.jmp_eip,eip,id_dest->val);//用jmp_eip记录新的eip值
+  decoding.is_jmp = 1;//修改标志
   print_asm("call %x", decoding.jmp_eip);
 }
 
