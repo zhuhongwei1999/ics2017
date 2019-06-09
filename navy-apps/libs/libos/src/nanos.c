@@ -30,7 +30,9 @@ int _write(int fd, void *buf, size_t count){
   return _syscall_(SYS_write, fd, (uintptr_t)buf, count);
 }
 
+
 extern char _end;
+intptr_t program_break = (intptr_t)&_end;
 void *_sbrk(intptr_t increment){
 	intptr_t old_pb = program_break;
   if (_syscall_(SYS_brk, old_pb + increment, 0, 0) == 0) {
