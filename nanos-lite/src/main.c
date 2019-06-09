@@ -34,6 +34,5 @@ int main() {
 
   uint32_t entry = loader(NULL, NULL);
   ((void (*)(void))entry)();
-  Log("cscsc\n");
   panic("Should not reach here");
 }
