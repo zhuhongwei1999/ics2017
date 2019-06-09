@@ -25,14 +25,15 @@ int main() {
 
 #ifdef HAS_ASYE
   Log("Initializing interrupt/exception handler...");
-  Log("abc");
+  Log("abc\n");
   init_irq();
 #endif
-
+  Log("qwe\n");
   init_fs();
+  Log("ccc\n");
 
-  uint32_t entry = loader(NULL, "/bin/text");
+  uint32_t entry = loader(NULL, NULL);
   ((void (*)(void))entry)();
-
+  Log("cscsc\n");
   panic("Should not reach here");
 }
