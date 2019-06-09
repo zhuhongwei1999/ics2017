@@ -25,6 +25,7 @@ int main() {
 
 #ifdef HAS_ASYE
   Log("Initializing interrupt/exception handler...");
+  Log("abc");
   init_irq();
 #endif
 
