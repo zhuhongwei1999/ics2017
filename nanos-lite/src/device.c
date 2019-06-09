@@ -10,21 +10,15 @@ static const char *keyname[256] __attribute__((used)) = {
 
 size_t events_read(void *buf, size_t len) {
   int key = _read_key();
-	bool down = false;
-	//Log("key = %d\n", key);
-	if (key & 0x8000) {
-		key ^= 0x8000;
-		down = true;
-	}
-	if (key == _KEY_NONE) {
-		unsigned long t = _uptime();
-		sprintf(buf, "t %d\n", t);
-	}
-	else {
-		//Log("I am here~\n");
-		sprintf(buf, "%s %s\n", down ? "kd" : "ku", keyname[key]);
-	}
-	return strlen(buf);
+  char keydown_char = (key & 0x8000 ? 'd' : 'u');
+  key &= ~0x8000;
+  if (key != _KEY_NONE) {
+    return snprintf(buf, len, "k%c %s\n", keydown_char, keyname[key]) - 1;
+  }
+  else {
+    unsigned long time_ms = _uptime();
+    return snprintf(buf, len, "t %d\n", time_ms) - 1;
+  }
 }
 
 static char dispinfo[128] __attribute__((used));
