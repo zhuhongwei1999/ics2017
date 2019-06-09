@@ -25,12 +25,9 @@ int main() {
 
 #ifdef HAS_ASYE
   Log("Initializing interrupt/exception handler...");
-  Log("abc\n");
   init_irq();
 #endif
-  Log("qwe\n");
   init_fs();
-  Log("ccc\n");
 
   uint32_t entry = loader(NULL, "/bin/text");
   ((void (*)(void))entry)();
