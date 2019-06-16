@@ -1,5 +1,7 @@
 #include "nemu.h"
 #include "device/mmio.h"
+#include "memory/mmu.h"
+
 #define PMEM_SIZE (128 * 1024 * 1024)
 
 #define pmem_rw(addr, type) *(type *)({\
@@ -12,90 +14,66 @@ uint8_t pmem[PMEM_SIZE];
 /* Memory accessing interfaces */
 
 uint32_t paddr_read(paddr_t addr, int len) {
-  int map_NO = is_mmio(addr);
-	if (map_NO != -1) {
-		return mmio_read(addr, len, map_NO);
-	}
-	else {
+	int mmio_n;
+	if ((mmio_n = is_mmio(addr)) != -1)
+		return mmio_read(addr, len, mmio_n);
+	else
 		return pmem_rw(addr, uint32_t) & (~0u >> ((4 - len) << 3));
-	}
 }
 
-void paddr_write(paddr_t addr, int len, uint32_t data) {
-  int map_NO = is_mmio(addr);
-	if (map_NO != -1) {
-		mmio_write(addr, len, data, map_NO);
-	}
-  else {
+void paddr_write(paddr_t addr, uint32_t data, int len) {
+	int mmio_n;
+	if ((mmio_n = is_mmio(addr)) != -1)
+		mmio_write(addr, len, data, mmio_n);
+	else
+	{
 		memcpy(guest_to_host(addr), &data, len);
 	}
+ 		
 }
 
-bool judgeCrossPage(vaddr_t addr, int len){
-  vaddr_t naddr=addr+len-1;
-  if((naddr&(~PAGE_MASK))!=(addr&(~PAGE_MASK))){
-    return true;
+paddr_t page_translate(paddr_t addr){
+  paddr_t dir = (addr >> 22) & 0x3ff;
+  paddr_t page = (addr >> 12) & 0x3ff;
+  paddr_t offset = addr & 0xfff;
+  if(cpu.cr0.paging){
+    uint32_t pdb = cpu.cr3.page_directory_base;
+    uint32_t pt = paddr_read((pdb << 12) + (dir << 2), 4);
+    assert(pt & 1);
+
+    uint32_t pf = paddr_read((pt & 0xfffff000) + (page << 2), 4);
+    if(!(pf & 1)){
+      printf("%x\n", cpu.eip);
+    }
+    assert(pf & 1);
+
+    return (pf & 0xfffff000) + offset;
   }
-  return false;
+  return addr;
 }
-
-paddr_t page_translate(vaddr_t addr, bool is_write) {
-  PDE pde, *pgdir;
-  PTE pte, *pgtab;
-  paddr_t paddr = addr;
-  if (cpu.cr0.paging) {
-    pgdir = (PDE *)(intptr_t)(cpu.cr3.page_directory_base << 12);
-    pde.val = paddr_read((intptr_t)&pgdir[(addr >> 22) & 0x3ff], 4);
-    assert(pde.present);
-    pde.accessed = 1;
-    pgtab = (PTE *)(intptr_t)(pde.page_frame << 12);
-    pte.val = paddr_read((intptr_t)&pgtab[(addr >> 12) & 0x3ff], 4);
-    assert(pte.present);
-    pte.accessed = 1;
-    pte.dirty = is_write ? 1 : pte.dirty;
-    paddr = (pte.page_frame << 12) | (addr & PAGE_MASK);
-  }
-  return paddr;
-}
-
 
 uint32_t vaddr_read(vaddr_t addr, int len) {
-  paddr_t paddr;
-  if (judgeCrossPage(addr, len)) {
-    /* data cross the page boundary */
-    union {
-      uint8_t bytes[4];
-      uint32_t dword;
-    } data = {0};
-    for (int i = 0; i < len; i++) {
-      paddr = page_translate(addr + i, false);
-      data.bytes[i] = (uint8_t)paddr_read(paddr, 1);
-    }
-    return data.dword;
+  // data cross the page boundary 
+  if((addr & 0xfff) + len > 0x1000){
+    uint8_t temp[8];
+    uint32_t temp_offset = addr & 3;
+    
+    paddr_t paddr = page_translate(addr);
+    *(uint32_t *)(temp + temp_offset) = paddr_read(paddr, 4 - temp_offset);
+
+    paddr = page_translate((addr & ~0xfff) + 0x1000);
+    *(uint32_t *)(temp + 4) = paddr_read(paddr, len + temp_offset - 4);
+
+    return (*(uint32_t *)(temp + temp_offset)) & (~0u >> ((4 - len) << 3));
     // assert(0);
-  } else {
-    // Log("211\n");
-    paddr = page_translate(addr, false);
-    // if(addr!=paddr)
-      // Log("addr:%d,paddr:%d\n",addr,paddr);
-    return paddr_read(paddr, len);
   }
+  return paddr_read(page_translate(addr), len);
+
 }
 
-void vaddr_write(vaddr_t addr, int len, uint32_t data) {
-  paddr_t paddr;
-
-  if (judgeCrossPage(addr, len)) {
-    /* data cross the page boundary */
-    // assert(0);
-    for (int i = 0; i < len; i++) {
-      paddr = page_translate(addr, true);
-      paddr_write(paddr, 1, data);
-      data >>= 8;
-      addr++;
-    }
-  } else {
-    paddr = page_translate(addr, true);
-    paddr_write(paddr, len, data);
+void vaddr_write(vaddr_t addr, uint32_t data, int len) {
+  if((addr & 0xfff) + len > 0x1000){
+    assert(0);
   }
+  paddr_write(page_translate(addr), data, len);
 }
