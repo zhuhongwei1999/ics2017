@@ -43,8 +43,7 @@ _RegSet* do_syscall(_RegSet *r) {
       break;
     }
     case SYS_brk:{
-      // ret = 0;
-      ret = mm_brk(a[1]);
+      ret = 0;
       break;
     }
 		case SYS_read:{
