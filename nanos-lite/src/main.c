@@ -30,7 +30,7 @@ int main() {
 #endif
   init_fs();
 
-   uint32_t entry = loader(NULL, NULL);
+   uint32_t entry = loader(NULL, "/bin/dummy");
    ((void (*)(void))entry)();
  	//load_prog("/bin/pal");
   panic("Should not reach here");
