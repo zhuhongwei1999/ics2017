@@ -93,4 +93,3 @@ _RegSet *_umake(_Protect *p, _Area ustack, _Area kstack, void *entry, char *cons
   (*tf)->eip=(uintptr_t)entry;
   return *tf;
 }
-
