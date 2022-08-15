@@ -11,7 +11,7 @@ bash init.sh
 ```
 
 The following subprojects/components are included. Some of them are not fully implemented.
-* [NEMU](https://github.com/NJU-ProjectN/nemu)
-* [Nexus-am](https://github.com/NJU-ProjectN/nexus-am)
-* [Nanos-lite](https://github.com/NJU-ProjectN/nanos-lite)
-* [Navy-apps](https://github.com/NJU-ProjectN/navy-apps)
+* [NEMU](https://github.com/zhuhongwei1999/ics2017/tree/master/nemu)
+* [Nexus-am](https://github.com/zhuhongwei1999/ics2017/tree/master/nexus-am)
+* [Nanos-lite](https://github.com/zhuhongwei1999/ics2017/tree/master/nanos-lite)
+* [Navy-apps](https://github.com/zhuhongwei1999/ics2017/tree/master/navy-apps)
